@@ -1,0 +1,83 @@
+@import url("../../config.css");
+
+.page {
+  padding: 3rem;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  gap: 1rem;
+  justify-content: center;
+}
+
+button.button {
+  /* Shape & position */
+  display: inline-block;
+  width: 100%;
+  height: 68px;
+  position: relative;
+
+  /* Decoration */
+  border-radius: 8px;
+  background-color: var(--grey-light);
+  border: none;
+  outline: none;
+
+  /* Effects */
+  cursor: pointer;
+  transition: background-color 50ms ease-out;
+
+  /* Button states */
+  &:hover,
+  &.selected:hover {
+    background-color: var(--purple);
+  }
+
+  &:active,
+  &.selected:active {
+    background-color: var(--black);
+
+    svg.icon {
+      fill: var(--purple);
+    }
+  }
+
+  &.selected {
+    background-color: var(--neon-yellow);
+  }
+
+  /* SVG Icon */
+  svg {
+    height: 29px;
+    fill: var(--foreground-color);
+  }
+
+  /* Tag */
+  .tag {
+    --_height: 24px;
+
+    position: absolute;
+    bottom: calc(var(--_height) * -1 + -4px);
+    left: 0;
+    width: 100%;
+    height: var(--_height);
+    border-radius: 4px;
+    place-content: center;
+    opacity: 0;
+
+    background-color: var(--black);
+    color: var(--purple);
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 400;
+
+    transition: all 100ms ease-out;
+    transform: translateY(-5px);
+  }
+
+  &:hover .tag {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

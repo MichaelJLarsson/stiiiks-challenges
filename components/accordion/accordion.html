@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Accordion Component</title>
+    <link
+      rel="stylesheet"
+      href="../../base.css"
+    />
+    <link
+      rel="stylesheet"
+      href="./accordion.css"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <div class="accordion-container">
+        <details class="accordion-item">
+          <summary class="accordion-header">
+            <span class="accordion-title">What is Stiiks Challenges?</span>
+            <svg
+              width="14"
+              height="8"
+              viewBox="0 0 14 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="accordion-icon"
+              aria-hidden="true"
+            >
+              <path
+                d="M12.293 0.292899C12.6836 -0.0976329 13.3166 -0.0976329 13.7071 0.292899C14.0976 0.68343 14.0976 1.31646 13.7071 1.70699L7.70704 7.7071C7.31651 8.09763 6.68349 8.09763 6.29296 7.7071L0.292896 1.70699C-0.0976321 1.31646 -0.0976321 0.68343 0.292896 0.292899C0.683425 -0.0976329 1.31645 -0.0976329 1.70697 0.292899L7 5.58597L12.293 0.292899Z"
+                fill="black"
+              />
+            </svg>
+          </summary>
+          <div class="accordion-content">
+            <p>
+              Stiiks Challenges is a design system and component library built
+              around CSS custom properties and SVG iconography. It follows a
+              minimal, asset-driven approach with centralized theming.
+            </p>
+          </div>
+        </details>
+
+        <details class="accordion-item" open>
+          <summary class="accordion-header">
+            <span class="accordion-title">How do I use the components?</span>
+            <svg
+              width="14"
+              height="8"
+              viewBox="0 0 14 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="accordion-icon"
+              aria-hidden="true"
+            >
+              <path
+                d="M12.293 0.292899C12.6836 -0.0976329 13.3166 -0.0976329 13.7071 0.292899C14.0976 0.68343 14.0976 1.31646 13.7071 1.70699L7.70704 7.7071C7.31651 8.09763 6.68349 8.09763 6.29296 7.7071L0.292896 1.70699C-0.0976321 1.31646 -0.0976321 0.68343 0.292896 0.292899C0.683425 -0.0976329 1.31645 -0.0976329 1.70697 0.292899L7 5.58597L12.293 0.292899Z"
+                fill="black"
+              />
+            </svg>
+          </summary>
+          <div class="accordion-content">
+            <p>
+              Each component is self-contained with its own HTML and CSS files.
+              Simply reference the base.css for global styles and the
+              component-specific CSS for styling. All colors are defined as CSS
+              custom properties in config.css.
+            </p>
+          </div>
+        </details>
+
+        <details class="accordion-item">
+          <summary class="accordion-header">
+            <span class="accordion-title">What about accessibility?</span>
+            <svg
+              width="14"
+              height="8"
+              viewBox="0 0 14 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="accordion-icon"
+              aria-hidden="true"
+            >
+              <path
+                d="M12.293 0.292899C12.6836 -0.0976329 13.3166 -0.0976329 13.7071 0.292899C14.0976 0.68343 14.0976 1.31646 13.7071 1.70699L7.70704 7.7071C7.31651 8.09763 6.68349 8.09763 6.29296 7.7071L0.292896 1.70699C-0.0976321 1.31646 -0.0976321 0.68343 0.292896 0.292899C0.683425 -0.0976329 1.31645 -0.0976329 1.70697 0.292899L7 5.58597L12.293 0.292899Z"
+                fill="black"
+              />
+            </svg>
+          </summary>
+          <div class="accordion-content">
+            <p>
+              This accordion uses native HTML &lt;details&gt; and
+              &lt;summary&gt; elements, which provide built-in keyboard
+              navigation (Space/Enter to toggle) and screen reader support. The
+              browser automatically manages ARIA states and focus handling.
+            </p>
+          </div>
+        </details>
+
+        <details class="accordion-item">
+          <summary class="accordion-header">
+            <span class="accordion-title">Can I customize the colors?</span>
+            <svg
+              width="14"
+              height="8"
+              viewBox="0 0 14 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="accordion-icon"
+              aria-hidden="true"
+            >
+              <path
+                d="M12.293 0.292899C12.6836 -0.0976329 13.3166 -0.0976329 13.7071 0.292899C14.0976 0.68343 14.0976 1.31646 13.7071 1.70699L7.70704 7.7071C7.31651 8.09763 6.68349 8.09763 6.29296 7.7071L0.292896 1.70699C-0.0976321 1.31646 -0.0976321 0.68343 0.292896 0.292899C0.683425 -0.0976329 1.31645 -0.0976329 1.70697 0.292899L7 5.58597L12.293 0.292899Z"
+                fill="black"
+              />
+            </svg>
+          </summary>
+          <div class="accordion-content">
+            <p>
+              Yes! All colors are defined as CSS custom properties in
+              config.css. You can easily modify the color palette by changing
+              these variables. The component uses semantic color names like
+              --neon-yellow, --green, and --purple from the design system.
+            </p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </body>
+</html>

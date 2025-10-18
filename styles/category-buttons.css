@@ -1,0 +1,84 @@
+@import url("../config.css");
+
+.category-button {
+  /* Shape & position */
+  display: inline-block;
+  width: 80px;
+  height: 68px;
+  position: relative;
+
+  /* Decoration */
+  border-radius: 8px;
+  background-color: var(--grey-light);
+  border: none;
+  outline: none;
+
+  /* Effects */
+  cursor: pointer;
+  transition: background-color 50ms ease-out;
+
+}
+
+/* Button states */
+.category-button:hover,
+.category-button.selected:hover {
+  background-color: var(--purple);
+}
+
+.category-button:active,
+.category-button.selected:active {
+  background-color: var(--black);
+}
+
+.category-button:active svg.category-icon,
+.category-button.selected:active svg.category-icon {
+  fill: var(--purple);
+}
+
+.category-button.selected {
+  background-color: var(--neon-yellow);
+}
+
+/* SVG Icon */
+.category-button svg.category-icon {
+  height: 29px;
+  fill: var(--foreground-color);
+}
+
+/* Focus styles for accessibility */
+.category-button:focus {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+.category-button:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.category-button:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .category-button {
+    width: 70px;
+    height: 60px;
+    
+    svg.category-icon {
+      height: 24px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .category-button {
+    width: 60px;
+    height: 50px;
+    
+    svg.category-icon {
+      height: 20px;
+    }
+  }
+}

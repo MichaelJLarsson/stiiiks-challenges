@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STIIICKS - Admin Panel</title>
+    <link rel="stylesheet" href="base.css" />
+    <link rel="stylesheet" href="styles/login.css" />
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="login-content">
+        <h1 class="stiiicks-title">Admin Panel</h1>
+        
+        <div class="admin-section">
+          <h2>Pending Submissions</h2>
+          <div id="pendingSubmissions" class="submissions-list">
+            <!-- Pending submissions will be rendered here -->
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h2>All Submissions</h2>
+          <div id="allSubmissions" class="submissions-list">
+            <!-- All submissions will be rendered here -->
+          </div>
+        </div>
+
+        <button class="challenge-button active" onclick="window.location.href='challenges.html'">
+          Back to Challenges
+        </button>
+      </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/storage.js"></script>
+    <script>
+      // Check authentication
+      if (!authManager.isAuthenticated()) {
+        window.location.href = 'index.html';
+      }
+
+      function renderPendingSubmissions() {
+        const users = storageManager.getUsers();
+        const container = document.getElementById('pendingSubmissions');
+        
+        container.innerHTML = '';
+        
+        Object.keys(users).forEach(email => {
+          const submissions = users[email].submissions;
+          Object.keys(submissions).forEach(challengeId => {
+            const submission = submissions[challengeId];
+            if (submission.status === 'pending') {
+              const submissionElement = document.createElement('div');
+              submissionElement.className = 'submission-item';
+              submissionElement.innerHTML = `
+                <div class="submission-info">
+                  <strong>User:</strong> ${email}<br>
+                  <strong>Challenge:</strong> ${challengeId}<br>
+                  <strong>URL:</strong> <a href="${submission.url}" target="_blank">${submission.url}</a><br>
+                  <strong>Submitted:</strong> ${new Date(submission.timestamp).toLocaleString()}
+                </div>
+                <div class="submission-actions">
+                  <button onclick="approveSubmission('${email}', '${challengeId}')" class="approve-btn">Approve</button>
+                  <button onclick="rejectSubmission('${email}', '${challengeId}')" class="reject-btn">Reject</button>
+                </div>
+              `;
+              container.appendChild(submissionElement);
+            }
+          });
+        });
+        
+        if (container.children.length === 0) {
+          container.innerHTML = '<p>No pending submissions.</p>';
+        }
+      }
+
+      function renderAllSubmissions() {
+        const users = storageManager.getUsers();
+        const container = document.getElementById('allSubmissions');
+        
+        container.innerHTML = '';
+        
+        Object.keys(users).forEach(email => {
+          const submissions = users[email].submissions;
+          Object.keys(submissions).forEach(challengeId => {
+            const submission = submissions[challengeId];
+            const submissionElement = document.createElement('div');
+            submissionElement.className = `submission-item ${submission.status}`;
+            submissionElement.innerHTML = `
+              <div class="submission-info">
+                <strong>User:</strong> ${email}<br>
+                <strong>Challenge:</strong> ${challengeId}<br>
+                <strong>URL:</strong> <a href="${submission.url}" target="_blank">${submission.url}</a><br>
+                <strong>Status:</strong> ${submission.status}<br>
+                <strong>Submitted:</strong> ${new Date(submission.timestamp).toLocaleString()}
+              </div>
+              <div class="submission-actions">
+                ${submission.status === 'pending' ? 
+                  `<button onclick="approveSubmission('${email}', '${challengeId}')" class="approve-btn">Approve</button>
+                   <button onclick="rejectSubmission('${email}', '${challengeId}')" class="reject-btn">Reject</button>` :
+                  `<button onclick="resetSubmission('${email}', '${challengeId}')" class="reset-btn">Reset</button>`
+                }
+              </div>
+            `;
+            container.appendChild(submissionElement);
+          });
+        });
+        
+        if (container.children.length === 0) {
+          container.innerHTML = '<p>No submissions yet.</p>';
+        }
+      }
+
+      function approveSubmission(email, challengeId) {
+        storageManager.approveChallenge(email, challengeId);
+        renderPendingSubmissions();
+        renderAllSubmissions();
+      }
+
+      function rejectSubmission(email, challengeId) {
+        const users = storageManager.getUsers();
+        if (users[email] && users[email].submissions[challengeId]) {
+          delete users[email].submissions[challengeId];
+          localStorage.setItem('stiiicks_users', JSON.stringify(users));
+          renderPendingSubmissions();
+          renderAllSubmissions();
+        }
+      }
+
+      function resetSubmission(email, challengeId) {
+        const users = storageManager.getUsers();
+        if (users[email] && users[email].submissions[challengeId]) {
+          users[email].submissions[challengeId].status = 'pending';
+          localStorage.setItem('stiiicks_users', JSON.stringify(users));
+          renderPendingSubmissions();
+          renderAllSubmissions();
+        }
+      }
+
+      // Initialize admin panel
+      renderPendingSubmissions();
+      renderAllSubmissions();
+    </script>
+
+    <style>
+      .admin-section {
+        margin-bottom: 2rem;
+        width: 100%;
+        max-width: 800px;
+      }
+
+      .admin-section h2 {
+        color: var(--foreground-color);
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+
+      .submissions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .submission-item {
+        background-color: var(--grey-lighter);
+        padding: 1rem;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .submission-item.pending {
+        border-left: 4px solid var(--orange);
+      }
+
+      .submission-item.approved {
+        border-left: 4px solid var(--green);
+      }
+
+      .submission-info {
+        flex: 1;
+        font-size: 0.875rem;
+        line-height: 1.4;
+      }
+
+      .submission-info a {
+        color: var(--purple);
+        word-break: break-all;
+      }
+
+      .submission-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-shrink: 0;
+      }
+
+      .approve-btn, .reject-btn, .reset-btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-size: most 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 150ms ease-out;
+      }
+
+      .approve-btn {
+        background-color: var(--green);
+        color: var(--white);
+      }
+
+      .approve-btn:hover {
+        background-color: #3d8b5f;
+      }
+
+      .reject-btn {
+        background-color: var(--orange);
+        color: var(--white);
+      }
+
+      .reject-btn:hover {
+        background-color: #e65a00;
+      }
+
+      .reset-btn {
+        background-color: var(--grey-light);
+        color: var(--foreground-color);
+      }
+
+      .reset-btn:hover {
+        background-color: var(--purple);
+        color: var(--white);
+      }
+    </style>
+  </body>
+</html>

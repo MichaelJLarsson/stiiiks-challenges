@@ -91,11 +91,8 @@
         const hasEmail = emailInput.value.trim().length > 0;
         const hasPassword = passwordInput.value.length > 0;
         
-        if (hasEmail && hasPassword) {
-          challengeButton.classList.add('active');
-        } else {
-          challengeButton.classList.remove('active');
-        }
+        // Change so that the button is disabled if the email or password is not filled in
+        challengeButton.disabled = !hasEmail || !hasPassword;
       }
 
       emailInput.addEventListener('input', updateButtonState);

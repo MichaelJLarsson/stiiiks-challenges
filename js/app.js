@@ -30,9 +30,6 @@ class App {
   initializeUI() {
     // Render category buttons
     uiManager.renderCategoryButtons();
-    
-    // Set user info in header if needed
-    this.updateUserInfo();
   }
 
   /**

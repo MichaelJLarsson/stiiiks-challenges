@@ -1,5 +1,6 @@
 @import url("../../config.css");
 @import url("../../styles/easings.css");
+@import url("../../styles/animations.css");
 
 .page {
   padding: 3rem;
@@ -108,17 +109,5 @@ button.button {
       opacity: 1;
       transform: translateY(0);
     }
-  }
-}
-
-@keyframes slot-machine {
-  0% {
-    transform: translateY(200%);
-    opacity: 0;
-  }
-  
-  100% {
-    transform: translateY(0);
-    opacity: 1;
   }
 }

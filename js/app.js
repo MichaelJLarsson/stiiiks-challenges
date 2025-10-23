@@ -5,20 +5,20 @@
 
 class App {
   constructor() {
-    this.init();
+    this.init().catch(console.error);
   }
 
   /**
    * Initialize the application
    */
-  init() {
+  async init() {
     // Check authentication
     if (!authManager.requireAuth()) {
       return; // Will redirect to login
     }
 
     // Initialize UI
-    this.initializeUI();
+    await this.initializeUI();
     
     // Set up event listeners
     this.setupEventListeners();
@@ -27,9 +27,9 @@ class App {
   /**
    * Initialize UI components
    */
-  initializeUI() {
+  async initializeUI() {
     // Render category buttons
-    uiManager.renderCategoryButtons();
+    await uiManager.renderCategoryButtons();
   }
 
   /**
@@ -154,14 +154,14 @@ class App {
   /**
    * Submit challenge URL
    */
-  submitChallengeUrl(challengeId, url) {
+  async submitChallengeUrl(challengeId, url) {
     const userEmail = authManager.getCurrentUser();
     
     // Save submission
     storageManager.submitChallenge(userEmail, challengeId, url);
     
     // Refresh UI
-    uiManager.renderChallenges(uiManager.currentCategory);
+    await uiManager.renderChallenges(uiManager.currentCategory);
     uiManager.updateSubcategoryCounters();
   }
 
@@ -231,13 +231,13 @@ class App {
   /**
    * Update challenge status (for admin use)
    */
-  updateChallengeStatus(email, challengeId, status) {
+  async updateChallengeStatus(email, challengeId, status) {
     if (status === 'approved') {
       storageManager.approveChallenge(email, challengeId);
     }
     
     // Refresh UI
-    uiManager.renderChallenges(uiManager.currentCategory);
+    await uiManager.renderChallenges(uiManager.currentCategory);
     uiManager.updateSubcategoryCounters();
   }
 }

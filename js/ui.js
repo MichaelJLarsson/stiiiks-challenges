@@ -6,12 +6,54 @@
 class UIManager {
   constructor() {
     this.currentCategory = null;
+    this.svgCache = new Map(); // Cache for SVG content
+  }
+
+  /**
+   * Fetch SVG content from file and cache it
+   */
+  async fetchSVGContent(iconName, className = '') {
+    if (this.svgCache.has(iconName)) {
+      return this.svgCache.get(iconName);
+    }
+
+    try {
+      const response = await fetch(`./assets/${iconName}.svg`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch SVG: ${response.statusText}`);
+      }
+      let svgContent = await response.text();
+      
+      // Add class to SVG element if provided
+      if (className) {
+        svgContent = svgContent.replace('<svg', `<svg class="${className}"`);
+      }
+      
+      this.svgCache.set(iconName, svgContent);
+      return svgContent;
+    } catch (error) {
+      console.error(`Error fetching SVG ${iconName}:`, error);
+      const fallbackSvg = `<svg width="32" height="29" viewBox="0 0 32 29" fill="none" xmlns="http://www.w3.org/2000/svg" class="${className}"><path d="M16 2L18.5 8.5L25 11L18.5 13.5L16 20L13.5 13.5L7 11L13.5 8.5L16 2Z" fill="currentColor"/></svg>`;
+      return fallbackSvg;
+    }
+  }
+
+  /**
+   * Get inline SVG content synchronously (for use in templates)
+   */
+  getInlineSVG(iconName, className = '') {
+    if (this.svgCache.has(iconName)) {
+      return this.svgCache.get(iconName);
+    }
+    
+    // Return a placeholder if not cached yet
+    return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="${className}"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/></svg>`;
   }
 
   /**
    * Render category buttons
    */
-  renderCategoryButtons() {
+  async renderCategoryButtons() {
     const categories = storageManager.getCategories();
     const categoryContainer = document.getElementById('categoryButtons');
     
@@ -19,20 +61,28 @@ class UIManager {
 
     categoryContainer.innerHTML = '';
 
-    categories.forEach(category => {
+    // Fetch all SVG content in parallel
+    const svgPromises = categories.map(category => 
+      this.fetchSVGContent(category.icon, 'category-icon').then(svgContent => ({
+        category,
+        svgContent
+      }))
+    );
+
+    const svgResults = await Promise.all(svgPromises);
+
+    svgResults.forEach(({ category, svgContent }) => {
       const button = document.createElement('button');
       button.className = 'category-button';
       button.setAttribute('data-category-id', category.id);
       button.setAttribute('aria-label', category.name);
       
-      // Add icon from assets folder
-      button.innerHTML = `
-        <img src="./assets/${category.icon}.svg" alt="${category.name} icon" class="category-icon" width="32" height="29" />
-      `;
+      // Add inline SVG icon
+      button.innerHTML = svgContent;
 
       // Add click handler
-      button.addEventListener('click', () => {
-        this.selectCategory(category.id);
+      button.addEventListener('click', async () => {
+        await this.selectCategory(category.id);
       });
 
       categoryContainer.appendChild(button);
@@ -40,7 +90,7 @@ class UIManager {
 
     // Select first category by default
     if (categories.length > 0) {
-      this.selectCategory(categories[0].id);
+      await this.selectCategory(categories[0].id);
     }
   }
 
@@ -48,7 +98,7 @@ class UIManager {
   /**
    * Select a category and render its challenges
    */
-  selectCategory(categoryId) {
+  async selectCategory(categoryId) {
     // Update button states
     document.querySelectorAll('.category-button').forEach(btn => {
       btn.classList.remove('selected');
@@ -63,13 +113,13 @@ class UIManager {
     this.currentCategory = categoryId;
     
     // Render challenges for this category
-    this.renderChallenges(categoryId);
+    await this.renderChallenges(categoryId);
   }
 
   /**
    * Render challenges for a specific category
    */
-  renderChallenges(categoryId) {
+  async renderChallenges(categoryId) {
     const category = storageManager.getCategoryById(categoryId);
     const challengesContainer = document.getElementById('challengesContainer');
     
@@ -80,6 +130,12 @@ class UIManager {
     if (categoryTitle) {
       categoryTitle.textContent = category.name;
     }
+
+    // Preload status icons
+    await Promise.all([
+      this.fetchSVGContent('clock-stroke', 'status-icon'),
+      this.fetchSVGContent('checklist-stroke', 'status-icon')
+    ]);
 
     // Clear container
     challengesContainer.innerHTML = '';
@@ -173,7 +229,7 @@ class UIManager {
             <button class="edit-url-btn" data-challenge-id="${challengeId}">Edit</button>
           </div>
           <div class="status-indicator pending">
-            <img src="./assets/clock-stroke.svg" alt="Pending" width="16" height="16" />
+            ${this.getInlineSVG('clock-stroke', 'status-icon')}
             <span>Pending</span>
           </div>
         </div>
@@ -187,7 +243,7 @@ class UIManager {
             <button class="edit-url-btn" data-challenge-id="${challengeId}">Edit</button>
           </div>
           <div class="status-indicator approved">
-            <img src="./assets/checklist-stroke.svg" alt="Approved" width="16" height="16" />
+            ${this.getInlineSVG('checklist-stroke', 'status-icon')}
             <span>Approved</span>
           </div>
         </div>

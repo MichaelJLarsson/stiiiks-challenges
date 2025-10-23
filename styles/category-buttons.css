@@ -1,8 +1,8 @@
 .category-button {
   /* Shape & position */
   display: inline-block;
-  width: 80px;
-  height: 68px;
+  width: 100%;
+  height: 100%;
   position: relative;
 
   /* Decoration */
@@ -38,7 +38,7 @@
 
 /* SVG Icon */
 .category-button svg.category-icon {
-  height: 29px;
+  height: 18px;
   fill: var(--foreground-color);
 }
 
@@ -57,25 +57,10 @@
   outline-offset: 2px;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
+@media (min-width: 480px) {
   .category-button {
-    width: 70px;
-    height: 60px;
-    
     svg.category-icon {
-      height: 24px;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .category-button {
-    width: 60px;
-    height: 50px;
-    
-    svg.category-icon {
-      height: 20px;
+      height: 29px;
     }
   }
 }

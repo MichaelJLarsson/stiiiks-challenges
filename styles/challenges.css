@@ -67,9 +67,14 @@ body {
 }
 
 .category-buttons-grid {
+  --icon-size: 48px;
+  --grid-gap: 4px;
+  --grid-columns: 3;
+  
   display: grid;
-  grid-template-columns: repeat(7, 80px);
-  gap: 8px;
+  grid-template-columns: repeat(var(--grid-columns), var(--icon-size));
+  grid-auto-rows: var(--icon-size);
+  gap: var(--grid-gap);
   justify-content: center;
   margin-bottom: 2rem;
 }
@@ -266,19 +271,30 @@ body {
   fill: currentColor;
 }
 
+@media (min-width: 480px) {
+  .category-buttons-grid {
+    --grid-columns: 4;
+    --icon-size: 68px;
+    --grid-gap: 8px;
+  }
+  
+  .stiiicks-title {
+    font-size: 2.5rem;
+  }
+  
+  .category-title {
+    font-size: 1.25rem;
+  }
+}
+
 /* Responsive design */
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   .main-content {
     padding: 1rem;
   }
   
   .stiiicks-title {
     font-size: 3rem;
-  }
-  
-  .category-buttons-grid {
-    grid-template-columns: repeat(4, 70px);
-    gap: 0.75rem;
   }
   
   .category-title {
@@ -297,19 +313,8 @@ body {
     min-width: 150px;
     font-size: 0.75rem;
   }
-}
 
-@media (max-width: 480px) {
   .category-buttons-grid {
-    grid-template-columns: repeat(3, 60px);
-    gap: 0.5rem;
-  }
-  
-  .stiiicks-title {
-    font-size: 2.5rem;
-  }
-  
-  .category-title {
-    font-size: 1.25rem;
+    --grid-columns: 7;
   }
 }

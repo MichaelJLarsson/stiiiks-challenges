@@ -1,4 +1,20 @@
+@import url("../../config.css");
+@import url("../../styles/easings.css");
+
+.page {
+  padding: 3rem;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  gap: 1rem;
+  justify-content: center;
+}
+
 button.button {
+  --button-background: var(--grey-light);
+
   /* Shape & position */
   display: inline-block;
   width: 100%;
@@ -7,38 +23,61 @@ button.button {
 
   /* Decoration */
   border-radius: 8px;
-  background-color: var(--grey-light);
+  background-color: var(--button-background);
   border: none;
   outline: none;
 
   /* Effects */
   cursor: pointer;
-  transition: background-color 50ms ease-out;
+  transition: all 100ms ease-out;
 
   /* Button states */
   &:hover,
+  &:focus-visible,
   &.selected:hover {
-    background-color: var(--purple);
+    --button-background: var(--purple);
+
+    transform: translateY(-2px);
+
+    .icon svg {
+      transform: scale(1.05);
+      animation: slot-machine 250ms var(--ease-out-3) forwards;
+    }
   }
 
   &:active,
   &.selected:active {
-    background-color: var(--black);
+    --button-background: var(--black);
 
-    svg.icon {
+    .icon svg {
       fill: var(--purple);
     }
   }
 
-  &.selected {
-    background-color: var(--neon-yellow);
+  &:focus-visible {
+    outline: 2px solid var(--button-background);
+    outline-offset: 3px;
   }
 
-  /* SVG Icon */
-  svg {
-    height: 29px;
-    fill: var(--foreground-color);
+  &.selected {
+    --button-background: var(--neon-yellow);
   }
+
+  /* Icon */
+  .icon {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    place-content: center;
+    
+    
+
+    svg {
+      height: 29px;
+      fill: var(--foreground-color);
+    }
+  }
+
 
   /* Tag */
   .tag {
@@ -59,12 +98,27 @@ button.button {
     font-size: 10px;
     font-weight: 400;
 
-    transition: all 100ms ease-out;
+    transition: all 150ms ease-out;
     transform: translateY(-5px);
   }
 
-  &:hover .tag {
-    opacity: 1;
+  &:hover,
+  &:focus-visible {
+    .tag {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@keyframes slot-machine {
+  0% {
+    transform: translateY(200%);
+    opacity: 0;
+  }
+  
+  100% {
     transform: translateY(0);
+    opacity: 1;
   }
 }

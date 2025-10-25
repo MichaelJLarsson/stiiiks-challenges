@@ -1,4 +1,6 @@
 .category-button {
+  --button-background: var(--grey-light);
+
   /* Shape & position */
   display: inline-block;
   width: 100%;
@@ -7,39 +9,95 @@
 
   /* Decoration */
   border-radius: 8px;
-  background-color: var(--grey-light);
+  background-color: var(--button-background);
   border: none;
   outline: none;
 
   /* Effects */
   cursor: pointer;
-  transition: background-color 50ms ease-out;
-}
+  transition: all 100ms ease-out;
 
-/* Button states */
-.category-button:hover,
-.category-button.selected:hover {
-  background-color: var(--purple);
-}
+  /* Button states */
+  &:hover,
+  &:focus-visible,
+  &.selected:hover {
+    --button-background: var(--purple);
 
-.category-button:active,
-.category-button.selected:active {
-  background-color: var(--black);
-}
+    transform: translateY(-2px);
 
-.category-button:active svg.category-icon,
-.category-button.selected:active svg.category-icon {
-  fill: var(--purple);
-}
+    /* Tag */
+    &::after {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
 
-.category-button.selected {
-  background-color: var(--neon-yellow);
-}
+    .icon svg {
+      transform: scale(1.05);
+      animation: slot-machine 250ms var(--ease-out-3) forwards;
+    }
+  }
 
-/* SVG Icon */
-.category-button svg.category-icon {
-  height: 18px;
-  fill: var(--foreground-color);
+  &:active,
+  &.selected:active {
+    --button-background: var(--black);
+
+    transform: translateY(0);
+
+    .icon svg {
+      fill: var(--purple);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--button-background);
+    outline-offset: 3px;
+  }
+
+  &.selected {
+    --button-background: var(--neon-yellow);
+  }
+
+  /* Tag */
+  &::after {
+    --_height: 24px;
+
+    /* Shape & position */
+    position: absolute;
+    width: 100%;
+    height: var(--_height);
+    bottom: calc(var(--_height) * -1 - 4px);
+    left: 0;
+    border-radius: 4px;
+    opacity: 0;
+    visibility: hidden;
+
+    /* Content and decoration */
+    content: attr(aria-label);
+    place-content: center;
+    background-color: var(--black);
+    color: var(--purple);
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 400;
+
+    /* Animation */
+    transition: all 150ms ease-out;
+    transform: translateY(-5px);
+  }
+
+  /* Button icon */
+  .icon {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    place-content: center;
+
+    svg {
+      height: 29px;
+      fill: var(--foreground-color);
+    }
+  }
 }
 
 /* Focus styles for accessibility */

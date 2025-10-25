@@ -12,7 +12,7 @@ class UIManager {
   /**
    * Fetch SVG content from file and cache it
    */
-  async fetchSVGContent(iconName, className = '') {
+  async fetchSVGContent(iconName, className = "") {
     if (this.svgCache.has(iconName)) {
       return this.svgCache.get(iconName);
     }
@@ -23,12 +23,12 @@ class UIManager {
         throw new Error(`Failed to fetch SVG: ${response.statusText}`);
       }
       let svgContent = await response.text();
-      
+
       // Add class to SVG element if provided
       if (className) {
-        svgContent = svgContent.replace('<svg', `<svg class="${className}"`);
+        svgContent = svgContent.replace("<svg", `<svg class="${className}"`);
       }
-      
+
       this.svgCache.set(iconName, svgContent);
       return svgContent;
     } catch (error) {
@@ -41,11 +41,11 @@ class UIManager {
   /**
    * Get inline SVG content synchronously (for use in templates)
    */
-  getInlineSVG(iconName, className = '') {
+  getInlineSVG(iconName, className = "") {
     if (this.svgCache.has(iconName)) {
       return this.svgCache.get(iconName);
     }
-    
+
     // Return a placeholder if not cached yet
     return `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="${className}"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/></svg>`;
   }
@@ -55,33 +55,38 @@ class UIManager {
    */
   async renderCategoryButtons() {
     const categories = storageManager.getCategories();
-    const categoryContainer = document.getElementById('categoryButtons');
-    
+    const categoryContainer = document.getElementById("categoryButtons");
+
     if (!categoryContainer) return;
 
-    categoryContainer.innerHTML = '';
+    categoryContainer.innerHTML = "";
 
     // Fetch all SVG content in parallel
-    const svgPromises = categories.map(category => 
-      this.fetchSVGContent(category.icon, 'category-icon').then(svgContent => ({
-        category,
-        svgContent
-      }))
+    const svgPromises = categories.map((category) =>
+      this.fetchSVGContent(category.icon, "category-icon").then(
+        (svgContent) => ({
+          category,
+          svgContent,
+        })
+      )
     );
 
     const svgResults = await Promise.all(svgPromises);
 
     svgResults.forEach(({ category, svgContent }) => {
-      const button = document.createElement('button');
-      button.className = 'category-button';
-      button.setAttribute('data-category-id', category.id);
-      button.setAttribute('aria-label', category.name);
-      
+      const button = document.createElement("button");
+      button.className = "category-button";
+      button.setAttribute("data-category-id", category.id);
+      button.setAttribute("aria-label", category.name);
+
       // Add inline SVG icon
-      button.innerHTML = svgContent;
+      const iconElement = document.createElement("div");
+      iconElement.setAttribute("class", "icon");
+      iconElement.innerHTML = svgContent;
+      button.appendChild(iconElement);
 
       // Add click handler
-      button.addEventListener('click', async () => {
+      button.addEventListener("click", async () => {
         await this.selectCategory(category.id);
       });
 
@@ -94,24 +99,25 @@ class UIManager {
     }
   }
 
-
   /**
    * Select a category and render its challenges
    */
   async selectCategory(categoryId) {
     // Update button states
-    document.querySelectorAll('.category-button').forEach(btn => {
-      btn.classList.remove('selected');
+    document.querySelectorAll(".category-button").forEach((btn) => {
+      btn.classList.remove("selected");
     });
-    
-    const selectedButton = document.querySelector(`[data-category-id="${categoryId}"]`);
+
+    const selectedButton = document.querySelector(
+      `[data-category-id="${categoryId}"]`
+    );
     if (selectedButton) {
-      selectedButton.classList.add('selected');
+      selectedButton.classList.add("selected");
     }
 
     // Update current category
     this.currentCategory = categoryId;
-    
+
     // Render challenges for this category
     await this.renderChallenges(categoryId);
   }
@@ -121,27 +127,27 @@ class UIManager {
    */
   async renderChallenges(categoryId) {
     const category = storageManager.getCategoryById(categoryId);
-    const challengesContainer = document.getElementById('challengesContainer');
-    
+    const challengesContainer = document.getElementById("challengesContainer");
+
     if (!category || !challengesContainer) return;
 
     // Update category title
-    const categoryTitle = document.getElementById('categoryTitle');
+    const categoryTitle = document.getElementById("categoryTitle");
     if (categoryTitle) {
       categoryTitle.textContent = category.name;
     }
 
     // Preload status icons
     await Promise.all([
-      this.fetchSVGContent('clock-stroke', 'status-icon'),
-      this.fetchSVGContent('checklist-stroke', 'status-icon')
+      this.fetchSVGContent("clock-stroke", "status-icon"),
+      this.fetchSVGContent("checklist-stroke", "status-icon"),
     ]);
 
     // Clear container
-    challengesContainer.innerHTML = '';
+    challengesContainer.innerHTML = "";
 
     // Render subcategories
-    category.subcategories.forEach(subcategory => {
+    category.subcategories.forEach((subcategory) => {
       const subcategoryElement = this.createSubcategoryElement(subcategory);
       challengesContainer.appendChild(subcategoryElement);
     });
@@ -151,19 +157,26 @@ class UIManager {
    * Create subcategory element with challenges
    */
   createSubcategoryElement(subcategory) {
-    const subcategoryDiv = document.createElement('div');
-    subcategoryDiv.className = 'subcategory';
-    
+    const subcategoryDiv = document.createElement("div");
+    subcategoryDiv.className = "subcategory";
+
     // Count approved challenges for this subcategory
     const userEmail = authManager.getCurrentUser();
-    const approvedCount = this.countApprovedChallenges(userEmail, subcategory.challenges);
-    
+    const approvedCount = this.countApprovedChallenges(
+      userEmail,
+      subcategory.challenges
+    );
+
     subcategoryDiv.innerHTML = `
       <div class="subcategory-header">
-        <h3 class="subcategory-title">${subcategory.name} ${approvedCount}/${subcategory.challenges.length}</h3>
+        <h3 class="subcategory-title">${subcategory.name} ${approvedCount}/${
+      subcategory.challenges.length
+    }</h3>
       </div>
       <div class="challenges-list">
-        ${subcategory.challenges.map(challenge => this.createChallengeElement(challenge)).join('')}
+        ${subcategory.challenges
+          .map((challenge) => this.createChallengeElement(challenge))
+          .join("")}
       </div>
     `;
 
@@ -175,7 +188,10 @@ class UIManager {
    */
   createChallengeElement(challenge) {
     const userEmail = authManager.getCurrentUser();
-    const submission = storageManager.getChallengeSubmission(userEmail, challenge.id);
+    const submission = storageManager.getChallengeSubmission(
+      userEmail,
+      challenge.id
+    );
     const status = submission ? submission.status : null;
 
     return `
@@ -195,12 +211,12 @@ class UIManager {
    */
   getChallengeStateClass(status) {
     switch (status) {
-      case 'pending':
-        return 'submitted';
-      case 'approved':
-        return 'approved';
+      case "pending":
+        return "submitted";
+      case "approved":
+        return "approved";
       default:
-        return 'default';
+        return "default";
     }
   }
 
@@ -220,7 +236,7 @@ class UIManager {
           />
         </div>
       `;
-    } else if (submission.status === 'pending') {
+    } else if (submission.status === "pending") {
       // Submitted state - show URL with clock icon
       return `
         <div class="challenge-submitted">
@@ -229,12 +245,12 @@ class UIManager {
             <button class="edit-url-btn" data-challenge-id="${challengeId}">Edit</button>
           </div>
           <div class="status-indicator pending">
-            ${this.getInlineSVG('clock-stroke', 'status-icon')}
+            ${this.getInlineSVG("clock-stroke", "status-icon")}
             <span>Pending</span>
           </div>
         </div>
       `;
-    } else if (submission.status === 'approved') {
+    } else if (submission.status === "approved") {
       // Approved state - show URL with checkmark
       return `
         <div class="challenge-approved">
@@ -243,7 +259,7 @@ class UIManager {
             <button class="edit-url-btn" data-challenge-id="${challengeId}">Edit</button>
           </div>
           <div class="status-indicator approved">
-            ${this.getInlineSVG('checklist-stroke', 'status-icon')}
+            ${this.getInlineSVG("checklist-stroke", "status-icon")}
             <span>Approved</span>
           </div>
         </div>
@@ -255,9 +271,9 @@ class UIManager {
    * Count approved challenges in a list
    */
   countApprovedChallenges(userEmail, challenges) {
-    return challenges.filter(challenge => {
+    return challenges.filter((challenge) => {
       const status = storageManager.getChallengeStatus(userEmail, challenge.id);
-      return status === 'approved';
+      return status === "approved";
     }).length;
   }
 
@@ -266,13 +282,18 @@ class UIManager {
    */
   updateSubcategoryCounters() {
     if (!this.currentCategory) return;
-    
+
     const category = storageManager.getCategoryById(this.currentCategory);
     const userEmail = authManager.getCurrentUser();
-    
-    category.subcategories.forEach(subcategory => {
-      const counter = this.countApprovedChallenges(userEmail, subcategory.challenges);
-      const titleElement = document.querySelector(`[data-subcategory="${subcategory.id}"] .subcategory-title`);
+
+    category.subcategories.forEach((subcategory) => {
+      const counter = this.countApprovedChallenges(
+        userEmail,
+        subcategory.challenges
+      );
+      const titleElement = document.querySelector(
+        `[data-subcategory="${subcategory.id}"] .subcategory-title`
+      );
       if (titleElement) {
         titleElement.textContent = `${subcategory.name} ${counter}/${subcategory.challenges.length}`;
       }

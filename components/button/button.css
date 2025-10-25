@@ -40,6 +40,13 @@ button.button {
 
     transform: translateY(-2px);
 
+    /* Tag */
+    &::after {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
     .icon svg {
       transform: scale(1.05);
       animation: slot-machine 250ms var(--ease-out-3) forwards;
@@ -49,6 +56,8 @@ button.button {
   &:active,
   &.selected:active {
     --button-background: var(--black);
+
+    transform: translateY(0);
 
     .icon svg {
       fill: var(--purple);
@@ -64,50 +73,44 @@ button.button {
     --button-background: var(--neon-yellow);
   }
 
-  /* Icon */
-  .icon {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    place-content: center;
-    
-    
-
-    svg {
-      height: 29px;
-      fill: var(--foreground-color);
-    }
-  }
-
-
   /* Tag */
-  .tag {
+  &::after {
     --_height: 24px;
 
+    /* Shape & position */
     position: absolute;
-    bottom: calc(var(--_height) * -1 + -4px);
-    left: 0;
     width: 100%;
     height: var(--_height);
+    bottom: calc(var(--_height) * -1 - 4px);
+    left: 0;
     border-radius: 4px;
-    place-content: center;
     opacity: 0;
+    visibility: hidden;
 
+    /* Content and decoration */
+    content: attr(aria-label);
+    place-content: center;
     background-color: var(--black);
     color: var(--purple);
     text-transform: uppercase;
     font-size: 10px;
     font-weight: 400;
 
+    /* Animation */
     transition: all 150ms ease-out;
     transform: translateY(-5px);
   }
 
-  &:hover,
-  &:focus-visible {
-    .tag {
-      opacity: 1;
-      transform: translateY(0);
+  /* Button icon */
+  .icon {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    place-content: center;
+
+    svg {
+      height: 29px;
+      fill: var(--foreground-color);
     }
   }
 }

@@ -73,11 +73,12 @@ class UIManager {
 
     const svgResults = await Promise.all(svgPromises);
 
-    svgResults.forEach(({ category, svgContent }) => {
+    svgResults.forEach(({ category, svgContent }, i) => {
       const button = document.createElement("button");
       button.className = "category-button";
       button.setAttribute("data-category-id", category.id);
       button.setAttribute("aria-label", category.name);
+      button.setAttribute("data-count", i + 1);
 
       // Add inline SVG icon
       const iconElement = document.createElement("div");

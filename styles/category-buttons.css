@@ -17,8 +17,12 @@
   outline: none;
 
   /* Effects */
+  --_delay: 125ms;
+
   cursor: pointer;
   transition: all 100ms ease-out;
+  animation: slide-in 1000ms var(--ease-spring-5) both;
+  animation-delay: calc(attr(data-count type(<number>)) * var(--_delay));
 
   /* Button states */
   &:hover,
@@ -37,7 +41,7 @@
 
     .icon svg {
       transform: scale(1.05);
-      animation: slot-machine 250ms var(--ease-out-3) forwards;
+      animation: slot-machine 600ms var(--ease-spring-3) forwards;
     }
   }
 

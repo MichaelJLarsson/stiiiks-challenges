@@ -85,7 +85,7 @@
     // Clear the submission
     storage.revokeChallenge($authStore, challenge.id);
     inputValue = '';
-    submission = null;
+    updateSubmission();
     isExpanded = false;
     if (onUpdate) onUpdate();
   }

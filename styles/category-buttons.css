@@ -101,7 +101,7 @@
     place-content: center;
 
     svg {
-      height: 29px;
+      height: 20px;
       fill: var(--foreground-color);
     }
   }

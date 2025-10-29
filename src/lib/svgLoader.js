@@ -19,11 +19,6 @@ export async function loadSvg(iconName, className = '') {
       svg = svg.replace('<svg', `<svg class="${className}"`);
     }
     
-    // For chevron icons, ensure the path has a fill attribute
-    if (iconName.includes('chevron')) {
-      svg = svg.replace('<path d=', '<path fill="black" d=');
-    }
-    
     return svg;
   } catch (error) {
     console.error(`Error loading SVG ${iconName}:`, error);

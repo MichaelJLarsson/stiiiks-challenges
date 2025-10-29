@@ -53,21 +53,30 @@ A simple web application for participating in social media challenges where user
 ## Technical Details
 
 ### Architecture
-- **Frontend**: Vanilla HTML/CSS/JavaScript
+- **Frontend**: Svelte 5 with Vite bundler
 - **Storage**: localStorage for client-side persistence
 - **Authentication**: Client-side only (email-based)
 - **Styling**: CSS custom properties with existing design system
+- **State Management**: Svelte stores for reactive state
 
 ### File Structure
 ```
 ├── index.html              # Login page
 ├── challenges.html         # Main challenges page
 ├── admin.html             # Admin panel
-├── js/
-│   ├── auth.js           # Authentication logic
-│   ├── storage.js        # localStorage management
-│   ├── ui.js             # UI rendering
-│   └── app.js            # Main application logic
+├── src/
+│   ├── main.js            # Login page entry
+│   ├── challenges.js      # Challenges page entry
+│   ├── admin.js           # Admin page entry
+│   ├── components/        # Svelte components
+│   │   ├── Login.svelte
+│   │   ├── Challenges.svelte
+│   │   ├── Admin.svelte
+│   │   ├── CategoryButton.svelte
+│   │   └── ChallengeItem.svelte
+│   └── stores/            # Svelte stores
+│       ├── auth.js        # Authentication state
+│       └── storage.js     # Data management
 ├── styles/
 │   ├── login.css         # Login page styles
 │   ├── challenges.css    # Main page layout
@@ -76,16 +85,28 @@ A simple web application for participating in social media challenges where user
 ├── assets/               # SVG icons
 ├── components/           # Existing component library
 ├── config.css           # Color variables
-└── base.css             # Base styles
+├── base.css             # Base styles
+├── vite.config.js       # Vite configuration
+└── svelte.config.js     # Svelte configuration
 ```
 
 ### Getting Started
 
-1. Open `index.html` in a web browser
-2. Enter any email address and password to log in
-3. Browse challenges by category
-4. Submit URLs for completed challenges
-5. Use the Admin panel to approve submissions
+#### Development
+1. Install dependencies: `npm install`
+2. Run the dev server: `npm run dev`
+3. Open your browser to the local URL shown (typically http://localhost:3000)
+
+#### Production Build
+1. Build the app: `npm run build`
+2. Preview the build: `npm run preview`
+3. Deploy the `dist/` folder to your hosting service
+
+#### Using the App
+1. Enter any email address and password to log in
+2. Browse challenges by category
+3. Submit URLs for completed challenges
+4. Use the Admin panel to approve submissions
 
 ### Design System
 
@@ -104,8 +125,14 @@ The app uses the existing STIIICKS design system with:
 - Social features (following, sharing)
 - Mobile app version
 
+## Technical Stack
+
+- **Svelte 5**: Modern reactive frontend framework
+- **Vite**: Fast build tool and dev server
+- **CSS Custom Properties**: For theming and design tokens
+- **localStorage**: Client-side data persistence
+
 ## Browser Support
 
-- Modern browsers with localStorage support
+- Modern browsers with localStorage and ES6+ support
 - Responsive design for mobile and desktop
-- No external dependencies required

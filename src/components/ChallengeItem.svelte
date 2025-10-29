@@ -131,6 +131,13 @@
           on:input={handleInput}
           on:blur={handleBlur}
         />
+        <button 
+          class="submit-btn" 
+          on:click={submitUrl}
+          disabled={!isValidUrl(inputValue.trim())}
+        >
+          Submit
+        </button>
       </div>
     {:else if submission}
       <div class="challenge-details">

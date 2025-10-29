@@ -16,19 +16,16 @@
   $: stateClass = getStateClass(status);
   
   onMount(async () => {
-    // Load status icons
+    // Load status icons using Vite's native ?raw import
+    // This is more efficient than fetch as it's handled at build time
     try {
-      const clockResponse = await fetch('./assets/clock-stroke.svg');
-      if (clockResponse.ok) {
-        let svg = await clockResponse.text();
-        clockSvg = svg.replace('<svg', '<svg class="status-icon"');
-      }
+      const [clockModule, checklistModule] = await Promise.all([
+        import('../../assets/clock-stroke.svg?raw'),
+        import('../../assets/checklist-stroke.svg?raw')
+      ]);
       
-      const checklistResponse = await fetch('./assets/checklist-stroke.svg');
-      if (checklistResponse.ok) {
-        let svg = await checklistResponse.text();
-        checklistSvg = svg.replace('<svg', '<svg class="status-icon"');
-      }
+      clockSvg = clockModule.default.replace('<svg', '<svg class="status-icon"');
+      checklistSvg = checklistModule.default.replace('<svg', '<svg class="status-icon"');
     } catch (error) {
       console.error('Error loading status icons:', error);
     }

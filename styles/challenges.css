@@ -8,9 +8,13 @@ body {
 
 .top-bar {
   background-color: var(--purple-light);
-  padding: 1rem 2rem;
+  height: 86px;
+  padding: 20px;
   display: flex;
   place-content: center;
+  align-items: flex-end;
+  box-sizing: border-box;
+  transition: height 200ms ease-out;
 }
 
 .logout-btn {
@@ -279,6 +283,10 @@ body {
   .main-content {
     padding: 1rem;
     padding-top: 68px;
+  }
+
+  .top-bar {
+    height: 52px;
   }
 
   .page-header {

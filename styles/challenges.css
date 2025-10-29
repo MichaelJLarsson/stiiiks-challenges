@@ -179,6 +179,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: transform 300ms ease-out;
+}
+
+.challenge-icon.rotated {
+  transform: rotate(180deg);
 }
 
 .challenge-icon :global(.chevron-icon) {

@@ -12,8 +12,7 @@
   let isExpanded = false;
   let clockSvg = '';
   let checklistSvg = '';
-  let chevronDownSvg = '';
-  let chevronUpSvg = '';
+  let chevronSvg = '';
 
   $: status = submission ? submission.status : null;
   $: stateClass = getStateClass(status);
@@ -23,14 +22,12 @@
     const svgs = await loadSvgs([
       { name: 'clock-stroke', className: 'status-icon' },
       { name: 'checklist-stroke', className: 'status-icon' },
-      { name: 'chevron-down', className: 'chevron-icon' },
-      { name: 'chevron-up', className: 'chevron-icon' }
+      { name: 'chevron-down', className: 'chevron-icon' }
     ]);
     
     clockSvg = svgs['clock-stroke'];
     checklistSvg = svgs['checklist-stroke'];
-    chevronDownSvg = svgs['chevron-down'];
-    chevronUpSvg = svgs['chevron-up'];
+    chevronSvg = svgs['chevron-down'];
     
     updateSubmission();
   });
@@ -112,15 +109,13 @@
       role="button"
       tabindex="0"
     >
-      <div class="challenge-icon">
+      <div class="challenge-icon" class:rotated={isExpanded && !submission}>
         {#if status === 'approved'}
           {@html checklistSvg}
         {:else if status === 'pending'}
           {@html clockSvg}
-        {:else if isExpanded}
-          {@html chevronUpSvg}
         {:else}
-          {@html chevronDownSvg}
+          {@html chevronSvg}
         {/if}
       </div>
       <h4 class="challenge-title">{challenge.title}</h4>

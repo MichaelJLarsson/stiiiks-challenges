@@ -42,6 +42,7 @@ body {
 
 .main-content {
   padding: 2rem;
+  padding-top: 48px;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -52,7 +53,7 @@ body {
 }
 
 .logo {
-  max-width: 268px;
+  width: clamp(10.375rem, 25.954vw + 4.292rem, 16.75rem);
 }
 
 .user-info {
@@ -72,12 +73,12 @@ body {
   grid-auto-rows: clamp(48px, 10vw, 68px);
   gap: clamp(4px, 1vw, 8px);
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 58px;
 }
 
 .category-title {
   text-align: center;
-  font-size: 2rem;
+  font-size: clamp(2rem, 1.4036rem + 2.5445vw, 2.625rem);
   font-weight: 600;
   color: var(--foreground-color);
   margin: 0;
@@ -271,24 +272,25 @@ body {
   .stiiicks-title {
     font-size: 2.5rem;
   }
-  
-  .category-title {
-    font-size: 1.25rem;
-  }
 }
 
 /* Responsive design */
 @media (min-width: 768px) {
   .main-content {
     padding: 1rem;
+    padding-top: 68px;
+  }
+
+  .page-header {
+    margin-bottom: 68px;
   }
   
   .stiiicks-title {
     font-size: 3rem;
   }
   
-  .category-title {
-    font-size: 1.5rem;
+  .category-buttons-grid {
+    margin-bottom: 68px;
   }
   
   .challenge-bar {

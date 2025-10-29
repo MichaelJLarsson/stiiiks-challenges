@@ -66,6 +66,16 @@ function submitChallenge(email, challengeId, url) {
   localStorage.setItem('stiiiks_users', JSON.stringify(users));
 }
 
+// Revoke a challenge submission
+function revokeChallenge(email, challengeId) {
+  const users = getUsers();
+  
+  if (users[email] && users[email].submissions[challengeId]) {
+    delete users[email].submissions[challengeId];
+    localStorage.setItem('stiiiks_users', JSON.stringify(users));
+  }
+}
+
 // For admin use: approve a challenge submission
 function approveChallenge(email, challengeId) {
   const users = getUsers();
@@ -272,6 +282,7 @@ export const storage = {
   getChallengeSubmission,
   getChallengeStatus,
   submitChallenge,
+  revokeChallenge,
   approveChallenge,
   // Trigger reactivity when storage changes
   refresh: () => storageStore.update(s => ({}))

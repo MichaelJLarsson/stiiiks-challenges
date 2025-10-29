@@ -41,6 +41,7 @@ Thumbs.db
 *.local
 *.swp
 *.bak
+*.backup
 
 # By default, ignore all asset output (SVGs, PNGs, etc.) in dist/build, but not in assets folder
 dist/**/*.svg

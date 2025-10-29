@@ -101,7 +101,7 @@
     place-content: center;
 
     svg {
-      height: 20px;
+      height: clamp(20px, 4vw, 29px);
       fill: var(--foreground-color);
     }
   }
@@ -120,12 +120,4 @@
 .category-button:focus-visible {
   outline: 2px solid var(--purple);
   outline-offset: 2px;
-}
-
-@media (min-width: 480px) {
-  .category-button {
-    svg.category-icon {
-      height: 29px;
-    }
-  }
 }

@@ -32,16 +32,20 @@
 
     transform: translateY(-2px);
 
-    /* Tag */
-    &::after {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
     .icon svg {
       transform: scale(1.05);
       animation: slot-machine 600ms var(--ease-spring-3) forwards;
+    }
+  }
+
+  /* Tag - only show on devices with hover capability (non-touch) */
+  @media (hover: hover) {
+    &:hover::after,
+    &:focus-visible::after,
+    &.selected:hover::after {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
   }
 

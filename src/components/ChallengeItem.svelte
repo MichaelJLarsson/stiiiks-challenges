@@ -9,22 +9,28 @@
 
   let submission = null;
   let inputValue = '';
-  let showInput = false;
+  let isExpanded = false;
   let clockSvg = '';
   let checklistSvg = '';
+  let chevronDownSvg = '';
+  let chevronUpSvg = '';
 
   $: status = submission ? submission.status : null;
   $: stateClass = getStateClass(status);
   
   onMount(async () => {
-    // Load status icons using the reusable SVG loader utility
+    // Load icons using the reusable SVG loader utility
     const svgs = await loadSvgs([
       { name: 'clock-stroke', className: 'status-icon' },
-      { name: 'checklist-stroke', className: 'status-icon' }
+      { name: 'checklist-stroke', className: 'status-icon' },
+      { name: 'chevron-down', className: 'chevron-icon' },
+      { name: 'chevron-up', className: 'chevron-icon' }
     ]);
     
     clockSvg = svgs['clock-stroke'];
     checklistSvg = svgs['checklist-stroke'];
+    chevronDownSvg = svgs['chevron-down'];
+    chevronUpSvg = svgs['chevron-up'];
     
     updateSubmission();
   });
@@ -70,56 +76,75 @@
     if (isValidUrl(inputValue.trim())) {
       storage.submitChallenge($authStore, challenge.id, inputValue.trim());
       updateSubmission();
-      showInput = false;
+      isExpanded = false;
       if (onUpdate) onUpdate();
     }
   }
 
-  function handleEdit() {
-    showInput = true;
-    inputValue = submission ? submission.url : '';
+  function handleRevoke() {
+    // Clear the submission
+    storage.revokeChallenge($authStore, challenge.id);
+    inputValue = '';
+    submission = null;
+    isExpanded = false;
+    if (onUpdate) onUpdate();
+  }
+
+  function toggleExpand() {
+    if (!submission) {
+      isExpanded = !isExpanded;
+    }
+  }
+
+  function handleTitleClick() {
+    if (!submission) {
+      toggleExpand();
+    }
   }
 </script>
 
 <div class="challenge-item" data-challenge-id={challenge.id}>
-  <div class="challenge-bar {stateClass}">
-    <div class="challenge-content">
+  <div class="challenge-bar {stateClass}" class:expanded={isExpanded}>
+    <div 
+      class="challenge-header" 
+      on:click={handleTitleClick}
+      on:keydown={(e) => e.key === 'Enter' && handleTitleClick()}
+      role="button"
+      tabindex="0"
+    >
+      <div class="challenge-icon">
+        {#if status === 'approved'}
+          {@html checklistSvg}
+        {:else if status === 'pending'}
+          {@html clockSvg}
+        {:else if isExpanded}
+          {@html chevronUpSvg}
+        {:else}
+          {@html chevronDownSvg}
+        {/if}
+      </div>
       <h4 class="challenge-title">{challenge.title}</h4>
-      
-      {#if !submission || showInput}
-        <div class="challenge-input-container">
-          <input 
-            type="url" 
-            class="challenge-input" 
-            placeholder="Drop your Instagram or TikTok link here (Accept our follow so we can view your content)"
-            value={inputValue}
-            on:input={handleInput}
-            on:blur={handleBlur}
-          />
-        </div>
-      {:else if submission.status === 'pending'}
-        <div class="challenge-submitted">
-          <div class="challenge-url">
-            <span class="url-text">{submission.url}</span>
-            <button class="edit-url-btn" on:click={handleEdit}>Edit</button>
-          </div>
-          <div class="status-indicator pending">
-            {@html clockSvg}
-            <span>Pending</span>
-          </div>
-        </div>
-      {:else if submission.status === 'approved'}
-        <div class="challenge-approved">
-          <div class="challenge-url">
-            <span class="url-text">{submission.url}</span>
-            <button class="edit-url-btn" on:click={handleEdit}>Edit</button>
-          </div>
-          <div class="status-indicator approved">
-            {@html checklistSvg}
-            <span>Approved</span>
-          </div>
-        </div>
-      {/if}
     </div>
+    
+    {#if isExpanded && !submission}
+      <div class="challenge-input-container">
+        <input 
+          type="url" 
+          class="challenge-input" 
+          placeholder="Drop your Instagram or TikTok link here (Accept our follow so we can view your content)"
+          value={inputValue}
+          on:input={handleInput}
+          on:blur={handleBlur}
+        />
+      </div>
+    {:else if submission}
+      <div class="challenge-details">
+        <div class="challenge-url">
+          <span class="url-icon">🔗</span>
+          <span class="url-text">{submission.url}</span>
+        </div>
+        <button class="revoke-btn" on:click={handleRevoke}>Revoke</button>
+      </div>
+    {/if}
   </div>
 </div>

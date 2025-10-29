@@ -101,9 +101,11 @@
           <div class="subcategory">
             <div class="subcategory-header">
               <h3 class="subcategory-title">
-                {subcategory.name} 
-                {subcategoryCounters[subcategory.id]?.approved || 0}/{subcategoryCounters[subcategory.id]?.total || 0}
+                {subcategory.name}
               </h3>
+              <span class="subcategory-badge">
+                {subcategoryCounters[subcategory.id]?.approved || 0}/{subcategoryCounters[subcategory.id]?.total || 0}
+              </span>
             </div>
             <div class="challenges-list">
               {#each subcategory.challenges as challenge}

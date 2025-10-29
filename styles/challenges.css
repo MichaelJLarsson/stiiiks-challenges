@@ -67,13 +67,10 @@ body {
 }
 
 .category-buttons-grid {
-  --button-size: clamp(48px, 10vw, 68px);
-  --grid-gap: clamp(4px, 1vw, 8px);
-  
   display: grid;
-  grid-template-columns: repeat(auto-fit, var(--button-size));
-  grid-auto-rows: var(--button-size);
-  gap: var(--grid-gap);
+  grid-template-columns: repeat(auto-fit, clamp(48px, 10vw, 68px));
+  grid-auto-rows: clamp(48px, 10vw, 68px);
+  gap: clamp(4px, 1vw, 8px);
   justify-content: center;
   margin-bottom: 2rem;
 }

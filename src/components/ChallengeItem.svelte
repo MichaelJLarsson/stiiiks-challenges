@@ -2,6 +2,7 @@
   import { authStore } from '../stores/auth.js';
   import { storage } from '../stores/storage.js';
   import { onMount } from 'svelte';
+  import { loadSvgs } from '../lib/svgLoader.js';
 
   export let challenge;
   export let onUpdate;
@@ -16,19 +17,14 @@
   $: stateClass = getStateClass(status);
   
   onMount(async () => {
-    // Load status icons using Vite's native ?raw import
-    // This is more efficient than fetch as it's handled at build time
-    try {
-      const [clockModule, checklistModule] = await Promise.all([
-        import('../../assets/clock-stroke.svg?raw'),
-        import('../../assets/checklist-stroke.svg?raw')
-      ]);
-      
-      clockSvg = clockModule.default.replace('<svg', '<svg class="status-icon"');
-      checklistSvg = checklistModule.default.replace('<svg', '<svg class="status-icon"');
-    } catch (error) {
-      console.error('Error loading status icons:', error);
-    }
+    // Load status icons using the reusable SVG loader utility
+    const svgs = await loadSvgs([
+      { name: 'clock-stroke', className: 'status-icon' },
+      { name: 'checklist-stroke', className: 'status-icon' }
+    ]);
+    
+    clockSvg = svgs['clock-stroke'];
+    checklistSvg = svgs['checklist-stroke'];
     
     updateSubmission();
   });

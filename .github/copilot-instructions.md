@@ -30,6 +30,7 @@ This is a **Stiiks Challenges** project - a design system and component library 
 ### Naming Conventions
 - **Icons**: Use descriptive names with `-stroke` suffix (e.g., `heart-stroke.svg`, `comment-stroke.svg`)
 - **CSS Variables**: Follow `--semantic-name` pattern, avoiding abbreviations
+- **CSS Variables**: Follow `--_local-property` pattern for "private" properties used only in the local class scope
 - **Colors**: Use semantic names (`--neon-yellow`) rather than generic ones (`--yellow`)
 
 ### Icon Integration
@@ -54,6 +55,7 @@ This is a **Stiiks Challenges** project - a design system and component library 
 - Leverage CSS custom properties for all theming
 - Avoid hardcoded colors in stylesheets
 - Use semantic color variables (`--foreground-color`) for component styling
+- Use pixel values for spacing and rem values for font sizes
 
 ## Key Files to Reference
 - `config.css` - Complete design token system and color palette

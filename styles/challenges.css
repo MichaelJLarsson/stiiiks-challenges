@@ -319,7 +319,6 @@ body {
   background-color: var(--black);
   color: var(--white);
   border: none;
-  border-radius: 8px;
   font-size: 0.875rem;
   font-weight: 500;
   font-family: Inter, sans-serif;
@@ -327,6 +326,7 @@ body {
   transition: all 150ms ease-out;
   white-space: nowrap;
   flex-shrink: 0;
+  border-radius: 100vw;
 }
 
 .submit-btn:hover:not(:disabled) {

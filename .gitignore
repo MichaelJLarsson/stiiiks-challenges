@@ -36,6 +36,7 @@ Thumbs.db
 *.ntvs*
 *.njsproj
 *.sln
+.well-known
 
 # Misc
 *.local

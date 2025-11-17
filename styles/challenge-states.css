@@ -19,11 +19,11 @@
 /* Expanded state - shows input field */
 .challenge-bar.expanded {
   background-color: var(--grey-light);
-  padding: 1rem;
 
   .challenge-input-container {
-    max-height: 50px;
+    max-height: 43px;
     opacity: 1;
+    margin-bottom: 1rem;
   }
 }
 

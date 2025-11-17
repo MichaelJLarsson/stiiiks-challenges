@@ -13,6 +13,7 @@
   let clockSvg = '';
   let checklistSvg = '';
   let chevronSvg = '';
+  let chainSvg = '';
 
   $: status = submission ? submission.status : null;
   $: stateClass = getStateClass(status);
@@ -22,12 +23,14 @@
     const svgs = await loadSvgs([
       { name: 'clock-stroke', className: 'status-icon' },
       { name: 'checklist-stroke', className: 'status-icon' },
-      { name: 'chevron-down', className: 'chevron-icon' }
+      { name: 'chevron-down', className: 'chevron-icon' },
+      { name: 'chain-stroke', className: 'chain-icon' }
     ]);
     
     clockSvg = svgs['clock-stroke'];
     checklistSvg = svgs['checklist-stroke'];
     chevronSvg = svgs['chevron-down'];
+    chainSvg = svgs['chain-stroke'];
     
     updateSubmission();
   });
@@ -123,7 +126,9 @@
     
     {#if isExpanded && !submission}
       <div class="challenge-input-container">
-        <input 
+        {@html chainSvg}
+        <input
+          name="challenge-url"
           type="url" 
           class="challenge-input" 
           placeholder="Drop your Instagram or TikTok link here (Accept our follow so we can view your content)"

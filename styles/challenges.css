@@ -138,7 +138,7 @@ body {
 }
 
 .challenge-bar {
-  padding: 1rem 1.5rem;
+  padding: 1rem;
   border-radius: 8px;
   transition: all 200ms ease-out;
 }
@@ -159,17 +159,12 @@ body {
   background-color: var(--blue-light);
 }
 
-.challenge-bar.expanded {
-  background-color: var(--white);
-  border: 2px solid var(--purple);
-  padding: 1rem 1.5rem;
-}
-
 .challenge-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   cursor: pointer;
+  margin-bottom: 1rem;
 }
 
 .challenge-icon {
@@ -284,11 +279,14 @@ body {
 }
 
 .challenge-input-container {
-  margin-top: 0.75rem;
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
-  align-items: stretch;
+  align-items: flex-start;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 500ms var(--ease-out-4);
 }
 
 .challenge-input {
@@ -302,6 +300,7 @@ body {
   color: var(--foreground-color);
   transition: border-color 150ms ease-out;
   box-sizing: border-box;
+  height: 100%;
 }
 
 .challenge-input:focus {
@@ -371,6 +370,7 @@ body {
 
   .challenge-bar {
     padding: 1rem;
+    padding-bottom: 0;
   }
 
   .challenge-title {

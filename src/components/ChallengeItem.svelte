@@ -124,7 +124,7 @@
       <h4 class="challenge-title">{challenge.title}</h4>
     </div>
     
-    {#if isExpanded && !submission}
+    {#if !submission}
       <div class="challenge-input-container">
         {@html chainSvg}
         <input

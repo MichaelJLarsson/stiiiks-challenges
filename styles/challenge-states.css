@@ -19,8 +19,8 @@
 
 /* Expanded state - shows input field */
 .challenge-bar.expanded {
-  background-color: var(--white);
-  border: 2px solid var(--purple);
+  background-color: var(--grey-light);
+  padding: 1rem;
 }
 
 /* Submitted state - purple background with clock icon */
@@ -47,20 +47,12 @@
 
 /* Input field styling */
 .challenge-input {
+  max-height: 0;
   transition: all 150ms ease-out;
 }
 
 .challenge-input:focus {
-  border-color: var(--purple);
-  box-shadow: 0 0 0 3px rgba(135, 123, 195, 0.1);
-}
-
-.challenge-input:invalid {
-  border-color: var(--orange);
-}
-
-.challenge-input:valid {
-  border-color: var(--green);
+  border-color: var(--grey);
 }
 
 /* Submit button animations */
@@ -72,6 +64,7 @@
 .submit-url-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background-color: var(--grey);
 }
 
 .submit-url-btn:active {
@@ -133,7 +126,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -171,7 +165,7 @@
 }
 
 .challenge-bar.loading::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;

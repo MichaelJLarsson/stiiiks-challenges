@@ -3,6 +3,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { resolve } from 'path';
 
 export default defineConfig({
+  base: '/stiiiks-challenges/',
   plugins: [svelte()],
   build: {
     rollupOptions: {

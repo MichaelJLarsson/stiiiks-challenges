@@ -31,7 +31,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          NODE_ENV: production
           VITE_BASE_PATH: /stiiiks-challenges/
 
       - name: Deploy to GitHub Pages

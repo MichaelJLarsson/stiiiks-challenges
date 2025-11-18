@@ -2,12 +2,9 @@ import { defineConfig } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { resolve } from "path";
 
-const repoBasePath = "/stiiiks-challenges/";
 
 export default defineConfig({
-  base:
-    process.env.VITE_BASE_PATH ||
-    (process.env.NODE_ENV === "production" ? repoBasePath : "/"),
+  base: process.env.VITE_BASE_PATH || "/",
   plugins: [svelte()],
   build: {
     rollupOptions: {

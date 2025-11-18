@@ -27,7 +27,7 @@
 <div class="login-container">
   <!-- Top bar -->
   <div class="top-bar">
-    <a href="#" class="back-to-shop">Go back to shop</a>
+    <a href="#top" class="back-to-shop">Go back to shop</a>
   </div>
 
   <!-- Main content -->
@@ -63,13 +63,13 @@
 
     <!-- Footer links -->
     <div class="footer-links">
-      <a href="#" class="footer-link">Terms of Service</a>
+      <a href="#top" class="footer-link">Terms of Service</a>
       <span class="separator">•</span>
-      <a href="#" class="footer-link">Privacy Policy</a>
+      <a href="#top" class="footer-link">Privacy Policy</a>
     </div>
 
     <div class="login-link">
-      <p>Already have an account? <a href="#" class="login-text-link">Log in</a></p>
+      <p>Already have an account? <a href="#top" class="login-text-link">Log in</a></p>
     </div>
   </div>
 </div>

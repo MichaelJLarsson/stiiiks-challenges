@@ -4,6 +4,7 @@
   import { storage } from '../stores/storage.js';
   import CategoryButton from './CategoryButton.svelte';
   import ChallengeItem from './ChallengeItem.svelte';
+  import logoUrl from '../../assets/stiiiks-logo.svg';
 
   let categories = [];
   let selectedCategory = null;
@@ -71,7 +72,7 @@
 <div class="main-content">
   <!-- Header -->
   <header class="page-header">
-    <img src="assets/stiiiks-logo.svg" alt="Stiiiks logo" class="logo">
+    <img src={logoUrl} alt="Stiiiks logo" class="logo">
   </header>
 
   <!-- Category buttons -->

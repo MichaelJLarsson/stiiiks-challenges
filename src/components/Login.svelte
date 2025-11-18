@@ -1,6 +1,7 @@
 <script>
   import { authStore } from '../stores/auth.js';
   import { onMount } from 'svelte';
+  import logoUrl from '../../assets/stiiiks-logo.svg';
 
   let email = '';
   let password = '';
@@ -32,7 +33,7 @@
 
   <!-- Main content -->
   <div class="login-content">
-    <img src="assets/stiiiks-logo.svg" alt="Stiiiks logo" class="logo">
+    <img src={logoUrl} alt="Stiiiks logo" class="logo">
     <p class="tagline">We turned your emotional damage into a game of challenges.</p>
 
     <form class="login-form" on:submit={handleSubmit}>

@@ -142,7 +142,8 @@
           Submit
         </button>
       </div>
-    {:else if submission && isExpanded}
+    {/if}
+    {#if submission}
       <div class="challenge-details">
         <div class="challenge-url">
           <span class="url-icon">🔗</span>

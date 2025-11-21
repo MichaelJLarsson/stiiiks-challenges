@@ -142,20 +142,31 @@ body {
   transition: all 150ms ease-out;
 }
 
+.challenge-bar:hover {
+  transform: translateY(-2px);
+}
+
 .challenge-bar.default {
   background-color: var(--grey-lighter);
 }
 
 .challenge-bar.default:hover {
   background-color: var(--grey-light);
-  transform: translateY(-2px);
 }
 
 .challenge-bar.submitted {
   background-color: var(--purple-light);
 }
 
+.challenge-bar.submitted:hover {
+  background-color: var(--purple-light);
+}
+
 .challenge-bar.approved {
+  background-color: var(--green-light);
+}
+
+.challenge-bar.approved:hover {
   background-color: var(--green-light);
 }
 
@@ -253,13 +264,6 @@ body {
   gap: 0.75rem;
   padding: 0 1rem;
   padding-bottom: 0;
-}
-
-.challenge-bar.expanded .challenge-details {
-  max-height: 200px;
-  opacity: 1;
-  padding-bottom: 1rem;
-  margin-top: 0.75rem;
 }
 
 .challenge-url {

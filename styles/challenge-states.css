@@ -17,13 +17,22 @@
 
 /* Expanded state - shows input field or details */
 .challenge-bar.expanded {
-  background-color: var(--grey-light);
-
   .challenge-input-container {
     max-height: 43px;
     opacity: 1;
     padding-bottom: 1rem;
   }
+
+  .challenge-details {
+    max-height: 43px;
+    opacity: 1;
+    padding-bottom: 1rem;
+    margin-top: 0.75rem;
+  }
+}
+
+.challenge-bar.default.expanded {
+  background-color: var(--grey-light);
 }
 
 .challenge-bar.submitted.expanded {

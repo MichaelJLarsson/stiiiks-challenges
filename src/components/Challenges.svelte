@@ -98,7 +98,7 @@
   <div class="challenges-section">
     <div class="challenges-container">
       {#if currentCategory}
-        {#each currentCategory.subcategories as subcategory}
+        {#each currentCategory.subcategories as subcategory (subcategory.id)}
           <div class="subcategory">
             <div class="subcategory-header">
               <h3 class="subcategory-title">
@@ -109,7 +109,7 @@
               </span>
             </div>
             <div class="challenges-list">
-              {#each subcategory.challenges as challenge}
+              {#each subcategory.challenges as challenge (challenge.id)}
                 <ChallengeItem {challenge} onUpdate={handleChallengeUpdate} />
               {/each}
             </div>

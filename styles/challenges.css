@@ -200,17 +200,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid;
   flex-shrink: 0;
 }
 
 .status-icon-circle.submitted {
-  border-color: var(--purple);
   color: var(--purple);
 }
 
 .status-icon-circle.approved {
-  border-color: var(--green);
   color: var(--green);
 }
 

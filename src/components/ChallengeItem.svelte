@@ -10,8 +10,8 @@
   let submission = null;
   let inputValue = '';
   let isExpanded = false;
-  let clockSvg = '';
-  let checklistSvg = '';
+  let clockPendingSvg = '';
+  let checkboxSvg = '';
   let chevronSvg = '';
   let chainSvg = '';
 
@@ -21,14 +21,14 @@
   onMount(async () => {
     // Load icons using the reusable SVG loader utility
     const svgs = await loadSvgs([
-      { name: 'clock-stroke', className: 'status-icon' },
-      { name: 'checklist-stroke', className: 'status-icon' },
+      { name: 'clock-pending-stroke', className: 'status-icon' },
+      { name: 'checkbox-stroke', className: 'status-icon' },
       { name: 'chevron-down', className: 'chevron-icon' },
       { name: 'chain-stroke', className: 'chain-icon' }
     ]);
     
-    clockSvg = svgs['clock-stroke'];
-    checklistSvg = svgs['checklist-stroke'];
+    clockPendingSvg = svgs['clock-pending-stroke'];
+    checkboxSvg = svgs['checkbox-stroke'];
     chevronSvg = svgs['chevron-down'];
     chainSvg = svgs['chain-stroke'];
     
@@ -115,9 +115,9 @@
       {#if submission}
         <div class="challenge-icon-right status-icon-circle" class:submitted={status === 'pending'} class:approved={status === 'approved'}>
           {#if status === 'approved'}
-            {@html checklistSvg}
+            {@html checkboxSvg}
           {:else if status === 'pending'}
-            {@html clockSvg}
+            {@html clockPendingSvg}
           {/if}
         </div>
       {/if}

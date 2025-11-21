@@ -11,46 +11,64 @@
   let currentCategory = null;
   let subcategoryCounters = {};
 
-  onMount(() => {
+  onMount(async () => {
     // Check authentication
     if (!$authStore) {
       window.location.href = 'index.html';
       return;
     }
 
-    // Load categories
-    categories = storage.getCategories();
-    
-    // Select first category by default
-    if (categories.length > 0) {
-      selectCategory(categories[0].id);
+    // Load categories from Supabase
+    try {
+      categories = await storage.getCategories();
+      
+      // Select first category by default
+      if (categories.length > 0) {
+        await selectCategory(categories[0].id);
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+      categories = [];
     }
   });
 
-  function selectCategory(categoryId) {
+  async function selectCategory(categoryId) {
     selectedCategory = categoryId;
-    currentCategory = storage.getCategoryById(categoryId);
-    updateCounters();
+    try {
+      currentCategory = await storage.getCategoryById(categoryId);
+      await updateCounters();
+    } catch (error) {
+      console.error('Error selecting category:', error);
+      currentCategory = null;
+    }
   }
 
-  function updateCounters() {
+  async function updateCounters() {
     if (!currentCategory) return;
     
     subcategoryCounters = {};
-    currentCategory.subcategories.forEach(subcategory => {
-      const approvedCount = countApprovedChallenges(subcategory.challenges);
+    for (const subcategory of currentCategory.subcategories) {
+      const approvedCount = await countApprovedChallenges(subcategory.challenges);
       subcategoryCounters[subcategory.id] = {
         approved: approvedCount,
         total: subcategory.challenges.length
       };
-    });
+    }
   }
 
-  function countApprovedChallenges(challenges) {
-    return challenges.filter(challenge => {
-      const status = storage.getChallengeStatus($authStore, challenge.id);
-      return status === 'approved';
-    }).length;
+  async function countApprovedChallenges(challenges) {
+    let approvedCount = 0;
+    for (const challenge of challenges) {
+      try {
+        const status = await storage.getChallengeStatus($authStore, challenge.id);
+        if (status === 'approved') {
+          approvedCount++;
+        }
+      } catch (error) {
+        console.error('Error checking challenge status:', error);
+      }
+    }
+    return approvedCount;
   }
 
   function handleLogout() {
@@ -58,8 +76,8 @@
     window.location.href = 'index.html';
   }
 
-  function handleChallengeUpdate() {
-    updateCounters();
+  async function handleChallengeUpdate() {
+    await updateCounters();
   }
 </script>
 

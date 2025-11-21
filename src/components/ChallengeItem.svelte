@@ -35,10 +35,15 @@
     updateSubmission();
   });
 
-  function updateSubmission() {
-    submission = storage.getChallengeSubmission($authStore, challenge.id);
-    if (submission) {
-      inputValue = submission.url;
+  async function updateSubmission() {
+    try {
+      submission = await storage.getChallengeSubmission($authStore, challenge.id);
+      if (submission) {
+        inputValue = submission.url;
+      }
+    } catch (error) {
+      console.error('Error updating submission:', error);
+      submission = null;
     }
   }
 
@@ -72,22 +77,32 @@
     }
   }
 
-  function submitUrl() {
+  async function submitUrl() {
     if (isValidUrl(inputValue.trim())) {
-      storage.submitChallenge($authStore, challenge.id, inputValue.trim());
-      updateSubmission();
-      isExpanded = false;
-      if (onUpdate) onUpdate();
+      try {
+        await storage.submitChallenge($authStore, challenge.id, inputValue.trim());
+        await updateSubmission();
+        isExpanded = false;
+        if (onUpdate) onUpdate();
+      } catch (error) {
+        console.error('Error submitting challenge:', error);
+        alert('Failed to submit challenge. Please try again.');
+      }
     }
   }
 
-  function handleRevoke() {
+  async function handleRevoke() {
     // Clear the submission
-    storage.revokeChallenge($authStore, challenge.id);
-    inputValue = '';
-    updateSubmission();
-    isExpanded = false;
-    if (onUpdate) onUpdate();
+    try {
+      await storage.revokeChallenge($authStore, challenge.id);
+      inputValue = '';
+      await updateSubmission();
+      isExpanded = false;
+      if (onUpdate) onUpdate();
+    } catch (error) {
+      console.error('Error revoking challenge:', error);
+      alert('Failed to revoke challenge. Please try again.');
+    }
   }
 
   function toggleExpand() {

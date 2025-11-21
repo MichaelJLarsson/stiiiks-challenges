@@ -109,8 +109,13 @@
               </span>
             </div>
             <div class="challenges-list">
-              {#each subcategory.challenges as challenge (challenge.id)}
-                <ChallengeItem {challenge} onUpdate={handleChallengeUpdate} />
+              {#each subcategory.challenges as challenge, index (challenge.id)}
+                <div
+                  class="challenge-item-wrapper"
+                  style={`animation-delay: ${index * 60}ms`}
+                >
+                  <ChallengeItem {challenge} onUpdate={handleChallengeUpdate} />
+                </div>
               {/each}
             </div>
           </div>

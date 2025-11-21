@@ -11,6 +11,62 @@ function initializeData() {
   if (!localStorage.getItem('stiiiks_users')) {
     localStorage.setItem('stiiiks_users', JSON.stringify({}));
   }
+  
+  // Seed mock user data with pending and approved submissions
+  seedMockUserData();
+}
+
+// Seed mock user data with pending and approved challenge submissions
+function seedMockUserData() {
+  const users = getUsers();
+  const mockUserEmail = 'test@example.com';
+  
+  // Only seed if user doesn't already have submissions
+  if (!users[mockUserEmail] || Object.keys(users[mockUserEmail].submissions || {}).length === 0) {
+    if (!users[mockUserEmail]) {
+      users[mockUserEmail] = { submissions: {} };
+    }
+    
+    // Add some pending submissions
+    users[mockUserEmail].submissions['burn-list-chill-1'] = {
+      url: 'https://www.instagram.com/p/example1/',
+      status: 'pending',
+      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() // 2 days ago
+    };
+    
+    users[mockUserEmail].submissions['burn-list-chill-2'] = {
+      url: 'https://www.tiktok.com/@user/video/123456',
+      status: 'pending',
+      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() // 1 day ago
+    };
+    
+    users[mockUserEmail].submissions['tea-time-easy-1'] = {
+      url: 'https://www.instagram.com/p/example2/',
+      status: 'pending',
+      timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString() // 3 hours ago
+    };
+    
+    // Add some approved submissions
+    users[mockUserEmail].submissions['burn-list-wild-1'] = {
+      url: 'https://www.instagram.com/p/approved1/',
+      status: 'approved',
+      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() // 5 days ago
+    };
+    
+    users[mockUserEmail].submissions['date-devil-first-1'] = {
+      url: 'https://www.tiktok.com/@user/video/789012',
+      status: 'approved',
+      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString() // 3 days ago
+    };
+    
+    users[mockUserEmail].submissions['delulu-zone-easy-1'] = {
+      url: 'https://www.instagram.com/p/approved2/',
+      status: 'approved',
+      timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days ago
+    };
+    
+    localStorage.setItem('stiiiks_users', JSON.stringify(users));
+  }
 }
 
 // Get all categories with subcategories and challenges

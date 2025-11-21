@@ -91,19 +91,15 @@
   }
 
   function toggleExpand() {
-    if (!submission) {
-      isExpanded = !isExpanded;
-    }
+    isExpanded = !isExpanded;
   }
 
   function handleTitleClick() {
-    if (!submission) {
-      toggleExpand();
-    }
+    toggleExpand();
   }
 </script>
 
-<div class="challenge-item" data-challenge-id={challenge.id}>
+<div class="challenge-item {stateClass}" data-challenge-id={challenge.id}>
   <div class="challenge-bar {stateClass}" class:expanded={isExpanded}>
     <div 
       class="challenge-header" 
@@ -112,16 +108,19 @@
       role="button"
       tabindex="0"
     >
-      <div class="challenge-icon" class:rotated={isExpanded && !submission}>
-        {#if status === 'approved'}
-          {@html checklistSvg}
-        {:else if status === 'pending'}
-          {@html clockSvg}
-        {:else}
-          {@html chevronSvg}
-        {/if}
+      <div class="challenge-icon-left" class:rotated={isExpanded}>
+        {@html chevronSvg}
       </div>
       <h4 class="challenge-title">{challenge.title}</h4>
+      {#if submission}
+        <div class="challenge-icon-right status-icon-circle" class:submitted={status === 'pending'} class:approved={status === 'approved'}>
+          {#if status === 'approved'}
+            {@html checklistSvg}
+          {:else if status === 'pending'}
+            {@html clockSvg}
+          {/if}
+        </div>
+      {/if}
     </div>
     
     {#if !submission}
@@ -143,7 +142,7 @@
           Submit
         </button>
       </div>
-    {:else if submission}
+    {:else if submission && isExpanded}
       <div class="challenge-details">
         <div class="challenge-url">
           <span class="url-icon">🔗</span>

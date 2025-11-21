@@ -8,29 +8,36 @@
 /* Default state - grey background */
 .challenge-bar.default {
   background-color: var(--grey-lighter);
-  border: 2px solid transparent;
+  border: none;
 }
 
 .challenge-bar.default:hover {
   background-color: var(--grey-light);
-  border-color: var(--grey-light);
 }
 
-/* Expanded state - shows input field */
+/* Expanded state - shows input field or details */
 .challenge-bar.expanded {
   background-color: var(--grey-light);
 
   .challenge-input-container {
     max-height: 43px;
     opacity: 1;
-    margin-bottom: 1rem;
+    padding-bottom: 1rem;
   }
+}
+
+.challenge-bar.submitted.expanded {
+  background-color: var(--purple-light);
+}
+
+.challenge-bar.approved.expanded {
+  background-color: var(--green-light);
 }
 
 /* Submitted state - purple background with clock icon */
 .challenge-bar.submitted {
   background-color: var(--purple-light);
-  border: 2px solid var(--purple);
+  border: none;
 }
 
 .challenge-bar.submitted .challenge-title {
@@ -40,8 +47,8 @@
 
 /* Approved state - green background with checkmark */
 .challenge-bar.approved {
-  background-color: var(--blue-light);
-  border: 2px solid var(--green);
+  background-color: var(--green-light);
+  border: none;
 }
 
 .challenge-bar.approved .challenge-title {

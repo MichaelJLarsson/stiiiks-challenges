@@ -156,7 +156,7 @@ body {
 }
 
 .challenge-bar.approved {
-  background-color: var(--blue-light);
+  background-color: var(--green-light);
 }
 
 .challenge-header {
@@ -165,9 +165,10 @@ body {
   gap: 0.75rem;
   cursor: pointer;
   padding: 1rem;
+  position: relative;
 }
 
-.challenge-icon {
+.challenge-icon-left {
   flex-shrink: 0;
   width: 16px;
   height: 16px;
@@ -177,28 +178,46 @@ body {
   transition: transform 300ms ease-out;
 }
 
-.challenge-icon.rotated {
+.challenge-icon-left.rotated {
   transform: rotate(180deg);
 }
 
-.challenge-icon :global(.chevron-icon) {
+.challenge-icon-left :global(.chevron-icon) {
   fill: var(--foreground-color);
   width: 14px;
   height: 8px;
 }
 
-.challenge-icon :global(.status-icon) {
-  fill: currentColor;
-  width: 16px;
-  height: 16px;
+.challenge-icon-right {
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
-.challenge-bar.submitted .challenge-icon {
+.status-icon-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+  flex-shrink: 0;
+}
+
+.status-icon-circle.submitted {
+  border-color: var(--purple);
   color: var(--purple);
 }
 
-.challenge-bar.approved .challenge-icon {
+.status-icon-circle.approved {
+  border-color: var(--green);
   color: var(--green);
+}
+
+.status-icon-circle :global(.status-icon) {
+  fill: currentColor;
+  width: 14px;
+  height: 14px;
 }
 
 .challenge-content {
@@ -227,10 +246,23 @@ body {
 }
 
 .challenge-details {
-  margin-top: 0.75rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 250ms var(--ease-out-5);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 0.75rem;
+  padding: 0 1rem;
+  padding-bottom: 0;
+}
+
+.challenge-bar.expanded .challenge-details {
+  max-height: 200px;
+  opacity: 1;
+  padding-bottom: 1rem;
+  margin-top: 0.75rem;
 }
 
 .challenge-url {
@@ -271,7 +303,7 @@ body {
   font-family: Inter, sans-serif;
   cursor: pointer;
   transition: background-color 150ms ease-out;
-  align-self: flex-end;
+  flex-shrink: 0;
 }
 
 .revoke-btn:hover {

@@ -109,13 +109,8 @@
               </span>
             </div>
             <div class="challenges-list">
-              {#each subcategory.challenges as challenge, index (challenge.id)}
-                <div
-                  class="challenge-item-wrapper"
-                  style={`animation-delay: ${index * 60}ms`}
-                >
-                  <ChallengeItem {challenge} onUpdate={handleChallengeUpdate} />
-                </div>
+              {#each subcategory.challenges as challenge (challenge.id)}
+                <ChallengeItem {challenge} onUpdate={handleChallengeUpdate} />
               {/each}
             </div>
           </div>
@@ -124,22 +119,3 @@
     </div>
   </div>
 </div>
-
-<style>
-  .challenge-item-wrapper {
-    opacity: 0;
-    transform: translateY(8px);
-    animation: challenge-stagger 320ms ease forwards;
-  }
-
-  @keyframes challenge-stagger {
-    from {
-      opacity: 0;
-      transform: translateY(12px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-</style>

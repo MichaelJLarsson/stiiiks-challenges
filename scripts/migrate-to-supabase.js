@@ -206,30 +206,65 @@ function getSupabaseClient() {
     throw new Error('Missing Supabase credentials. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
   }
 
-  return createClient(supabaseUrl, supabaseKey);
+  // Clean up URL: remove trailing slashes, semicolons, and whitespace
+  const cleanUrl = supabaseUrl.trim().replace(/[\/;]+$/, '');
+  const cleanKey = supabaseKey.trim();
+  
+  return createClient(cleanUrl, cleanKey);
 }
 
 /**
  * Migrate categories, subcategories, and challenges
+ * Returns a mapping of old string IDs to new UUIDs
  */
-async function migrateCategories(supabase) {
+async function migrateCategories(supabase, force = false) {
   console.log('Starting categories migration...');
   const challengeIdMapping = {}; // Map old string IDs to new UUIDs
   
   try {
     // Check if categories already exist
-    const { data: existingCategories } = await supabase.from('categories').select('id, name').limit(1);
-    if (existingCategories && existingCategories.length > 0) {
-      console.log('Categories already exist. Skipping migration.');
-      // Still need to build mapping for submissions
-      const { data: allCategories } = await supabase.from('categories').select('id, name');
-      const { data: allSubcategories } = await supabase.from('subcategories').select('id, category_id, name');
-      const { data: allChallenges } = await supabase.from('challenges').select('id, title');
-      
-      // Note: This won't create the full mapping since we don't have old IDs stored
-      // This is a limitation - full mapping would require storing old IDs in the database
-      console.warn('Note: Cannot fully map old challenge IDs without old ID storage in database.');
-      return challengeIdMapping;
+    if (!force) {
+      const { data: existingCategories } = await supabase.from('categories').select('id, name').limit(1);
+      if (existingCategories && existingCategories.length > 0) {
+        console.log('Categories already exist. Building mapping from database...');
+        
+        // Build mapping by fetching all challenges and matching by title
+        // This works because we know the seed data structure
+        const { data: allCategories } = await supabase.from('categories').select('id, name').order('order_index');
+        const { data: allSubcategories } = await supabase.from('subcategories').select('id, category_id, name').order('order_index');
+        const { data: allChallenges } = await supabase.from('challenges').select('id, title, subcategory_id').order('order_index');
+        
+        // Rebuild the mapping by matching seed data structure
+        for (let catIdx = 0; catIdx < seedCategories.length && catIdx < allCategories.length; catIdx++) {
+          const seedCat = seedCategories[catIdx];
+          const dbCat = allCategories[catIdx];
+          
+          if (seedCat.name !== dbCat.name) continue;
+          
+          const catSubcategories = allSubcategories.filter(sub => sub.category_id === dbCat.id).sort((a, b) => a.order_index - b.order_index);
+          
+          for (let subIdx = 0; subIdx < seedCat.subcategories.length && subIdx < catSubcategories.length; subIdx++) {
+            const seedSub = seedCat.subcategories[subIdx];
+            const dbSub = catSubcategories[subIdx];
+            
+            if (seedSub.name !== dbSub.name) continue;
+            
+            const subChallenges = allChallenges.filter(ch => ch.subcategory_id === dbSub.id).sort((a, b) => a.order_index - b.order_index);
+            
+            for (let chIdx = 0; chIdx < seedSub.challenges.length && chIdx < subChallenges.length; chIdx++) {
+              const seedCh = seedSub.challenges[chIdx];
+              const dbCh = subChallenges[chIdx];
+              
+              if (seedCh.title === dbCh.title) {
+                challengeIdMapping[seedCh.id] = dbCh.id;
+              }
+            }
+          }
+        }
+        
+        console.log('Built challenge ID mapping from existing database:', Object.keys(challengeIdMapping).length, 'mappings');
+        return challengeIdMapping;
+      }
     }
 
     // Migrate categories
@@ -311,10 +346,196 @@ async function migrateCategories(supabase) {
 }
 
 /**
- * Migrate users and submissions
+ * Create mock users with sample submissions
+ */
+async function seedMockUsers(supabase, challengeIdMapping) {
+  console.log('Starting mock users seeding...');
+  
+  const mockUsers = [
+    {
+      email: 'alice@example.com',
+      submissions: [
+        {
+          challengeId: 'burn-list-chill-1',
+          url: 'https://www.instagram.com/p/example1/',
+          status: 'pending',
+          daysAgo: 2
+        },
+        {
+          challengeId: 'burn-list-chill-2',
+          url: 'https://www.tiktok.com/@user/video/123456',
+          status: 'pending',
+          daysAgo: 1
+        },
+        {
+          challengeId: 'tea-time-easy-1',
+          url: 'https://www.instagram.com/p/example2/',
+          status: 'pending',
+          daysAgo: 0.125 // 3 hours
+        },
+        {
+          challengeId: 'burn-list-wild-1',
+          url: 'https://www.instagram.com/p/approved1/',
+          status: 'approved',
+          daysAgo: 5
+        },
+        {
+          challengeId: 'date-devil-first-1',
+          url: 'https://www.tiktok.com/@user/video/789012',
+          status: 'approved',
+          daysAgo: 3
+        },
+      ]
+    },
+    {
+      email: 'bob@example.com',
+      submissions: [
+        {
+          challengeId: 'delulu-zone-easy-1',
+          url: 'https://www.instagram.com/p/approved2/',
+          status: 'approved',
+          daysAgo: 7
+        },
+        {
+          challengeId: 'smoke-story-creative-1',
+          url: 'https://www.instagram.com/p/creative1/',
+          status: 'pending',
+          daysAgo: 4
+        },
+        {
+          challengeId: 'the-drop-single-1',
+          url: 'https://www.tiktok.com/@bob/video/111222',
+          status: 'approved',
+          daysAgo: 6
+        },
+      ]
+    },
+    {
+      email: 'charlie@example.com',
+      submissions: [
+        {
+          challengeId: 'truth-tag-honest-1',
+          url: 'https://www.instagram.com/p/honest1/',
+          status: 'pending',
+          daysAgo: 1
+        },
+        {
+          challengeId: 'burn-list-social-1',
+          url: 'https://www.tiktok.com/@charlie/video/333444',
+          status: 'approved',
+          daysAgo: 2
+        },
+      ]
+    },
+    {
+      email: 'diana@example.com',
+      submissions: [
+        {
+          challengeId: 'the-drop-ghosted-1',
+          url: 'https://www.instagram.com/p/ghosted1/',
+          status: 'pending',
+          daysAgo: 0.5
+        },
+        {
+          challengeId: 'date-devil-bad-1',
+          url: 'https://www.tiktok.com/@diana/video/555666',
+          status: 'pending',
+          daysAgo: 3
+        },
+        {
+          challengeId: 'tea-time-easy-2',
+          url: 'https://www.instagram.com/p/tea1/',
+          status: 'approved',
+          daysAgo: 4
+        },
+      ]
+    }
+  ];
+
+  try {
+    for (const mockUser of mockUsers) {
+      // Find or create user
+      let user;
+      const { data: existingUser } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', mockUser.email)
+        .single();
+
+      if (existingUser) {
+        user = existingUser;
+        console.log(`User ${mockUser.email} already exists, checking submissions...`);
+      } else {
+        const { data: newUser, error: userError } = await supabase
+          .from('users')
+          .insert([{ email: mockUser.email }])
+          .select()
+          .single();
+
+        if (userError) {
+          console.error(`Error creating user ${mockUser.email}:`, userError);
+          continue;
+        }
+        user = newUser;
+        console.log(`Created mock user: ${mockUser.email}`);
+      }
+
+      // Create submissions
+      for (const submission of mockUser.submissions) {
+        const newChallengeId = challengeIdMapping[submission.challengeId];
+        
+        if (!newChallengeId) {
+          console.warn(`  Could not find mapping for challenge ${submission.challengeId}. Skipping submission.`);
+          continue;
+        }
+
+        // Check if submission already exists
+        const { data: existingSubmission } = await supabase
+          .from('submissions')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('challenge_id', newChallengeId)
+          .single();
+
+        if (existingSubmission) {
+          console.log(`  Submission for ${submission.challengeId} already exists. Skipping.`);
+          continue;
+        }
+
+        // Calculate timestamp
+        const timestamp = new Date(Date.now() - submission.daysAgo * 24 * 60 * 60 * 1000).toISOString();
+
+        // Create submission
+        const { error: submissionError } = await supabase
+          .from('submissions')
+          .insert([{
+            user_id: user.id,
+            challenge_id: newChallengeId,
+            url: submission.url,
+            status: submission.status,
+            created_at: timestamp
+          }]);
+
+        if (submissionError) {
+          console.error(`  Error creating submission for ${submission.challengeId}:`, submissionError);
+        } else {
+          console.log(`  Created submission for ${submission.challengeId} (${submission.status})`);
+        }
+      }
+    }
+
+    console.log('Mock users seeding completed!');
+  } catch (error) {
+    console.error('Error during mock users seeding:', error);
+    throw error;
+  }
+}
+
+/**
+ * Migrate users and submissions from localStorage (if any)
  */
 async function migrateUsersAndSubmissions(supabase, challengeIdMapping) {
-  console.log('Starting users and submissions migration...');
+  console.log('Starting users and submissions migration from localStorage...');
   
   try {
     // Get users from localStorage (if running in browser)
@@ -327,7 +548,7 @@ async function migrateUsersAndSubmissions(supabase, challengeIdMapping) {
     }
 
     if (Object.keys(users).length === 0) {
-      console.log('No users found in localStorage. Nothing to migrate.');
+      console.log('No users found in localStorage. Skipping localStorage migration.');
       return;
     }
 
@@ -414,24 +635,36 @@ async function migrateUsersAndSubmissions(supabase, challengeIdMapping) {
 /**
  * Main migration function
  */
-export async function migrateToSupabase() {
+export async function migrateToSupabase(forceSeed = false) {
   console.log('Starting migration to Supabase...');
   
   try {
     const supabase = getSupabaseClient();
     
-    // Step 1: Migrate categories, subcategories, and challenges
-    const challengeIdMapping = await migrateCategories(supabase);
+    // Step 1: Migrate/seed categories, subcategories, and challenges
+    const challengeIdMapping = await migrateCategories(supabase, forceSeed);
     
-    // Step 2: Migrate users and submissions
+    if (Object.keys(challengeIdMapping).length === 0) {
+      throw new Error('No challenge ID mapping created. Make sure categories were seeded correctly.');
+    }
+    
+    // Step 2: Seed mock users with submissions
+    await seedMockUsers(supabase, challengeIdMapping);
+    
+    // Step 3: Migrate users and submissions from localStorage (if any)
     await migrateUsersAndSubmissions(supabase, challengeIdMapping);
     
-    console.log('Migration completed successfully!');
-    console.log('Challenge ID mapping (save this for reference):', challengeIdMapping);
+    console.log('\n✅ Migration completed successfully!');
+    console.log(`📊 Created ${Object.keys(challengeIdMapping).length} challenge mappings`);
+    console.log('\nChallenge ID mapping (first 5 entries):');
+    const entries = Object.entries(challengeIdMapping).slice(0, 5);
+    entries.forEach(([oldId, newId]) => {
+      console.log(`  ${oldId} -> ${newId}`);
+    });
     
     return challengeIdMapping;
   } catch (error) {
-    console.error('Migration failed:', error);
+    console.error('❌ Migration failed:', error);
     throw error;
   }
 }
